@@ -24,23 +24,21 @@ const CreateIssuePage = () => {
   const [error, setError] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(false);
   const router = useRouter();
+  const onSubmit = handleSubmit(async (data) => {
+    try {
+      setLoading(true);
+      await axios.post("/api/issue", data);
+      router.push("/issues");
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+      setError("Failed to create issue");
+    }
+  });
   return (
     <>
-      <form
-        className="max-w-xl space-y-3"
-        onSubmit={handleSubmit(async (data) => {
-          try {
-            setLoading(true);
-            await axios.post("/api/issue", data);
-            router.push("/issues");
-            setLoading(false);
-          } catch (error) {
-            console.error(error);
-            setLoading(false);
-            setError("Failed to create issue");
-          }
-        })}
-      >
+      <form className="max-w-xl space-y-3" onSubmit={onSubmit}>
         <TextField.Root
           placeholder="Enter Title"
           {...register("title")}
